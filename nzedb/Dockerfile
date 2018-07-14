@@ -2,7 +2,7 @@ FROM alpine:3.7
 MAINTAINER theslydetector@gmail.com
 
 # Configure Timezone
-ENV TIMEZONE "America/Edmonton"
+ENV TIMEZONE "America/Los_Angeles"
 RUN rm -f /etc/localtime && \
   ln -s "/usr/share/zoneinfo/${TIMEZONE}" /etc/localtime && \
   echo "${TIMEZONE}" > /etc/timezone
@@ -71,7 +71,7 @@ RUN pip install --upgrade pip && \
 # Configure PHP
 RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php7/php.ini && \
   sed -ri "s/(memory_limit =) (.*$)/\1 -1/" /etc/php7/php.ini && \
-  sed -ri 's/;(date.timezone =)/\1 America\/Chicago/' /etc/php7/php.ini && \
+  sed -ri 's/;(date.timezone =)/\1 America\/Los_Angeles/' /etc/php7/php.ini && \
   sed -ri 's/listen\s*=\s*127.0.0.1:9000/listen = 9000/g' /etc/php7/php-fpm.d/www.conf && \
   sed -ri 's|;include_path = ".:/php/includes"|include_path = ".:/usr/share/php7"|g' /etc/php7/php.ini && \
   mkdir -p /var/log/php-fpm/
