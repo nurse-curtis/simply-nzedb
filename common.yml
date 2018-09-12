@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     ports:
       - 8800:8800
+      - 8443:8443
     env_file: 
       - $PWD/etc/simply_nzedb.conf
     volumes:
@@ -44,6 +45,7 @@ services:
       - $PWD/data/import:/var/www/nZEDb/resources/import/
       - $PWD/data/proxychains.conf:/etc/proxychains/proxychains.conf
       - $PWD/data/db_backups:/db_backups
+      - /etc/letsencrypt:/etc/letsencrypt/
 
   adminer:
     image: clue/adminer
