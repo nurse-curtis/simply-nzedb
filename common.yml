@@ -46,6 +46,7 @@ services:
       - $PWD/data/proxychains.conf:/etc/proxychains/proxychains.conf
       - $PWD/data/db_backups:/db_backups
       - $PWD/data/sphinxsearch:/var/lib/sphinxsearch/
+      - $PWD/data/cron_predb_import_daily_batch.sh:/etc/periodic/daily/cron_predb_import_daily_batch.sh
       - /etc/letsencrypt:/etc/letsencrypt/
 
   adminer:
