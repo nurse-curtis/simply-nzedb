@@ -41,13 +41,24 @@ RUN apk add --update \
   perl-dbd-mysql \
   perl-term-readkey \
   && \
-  rm -rf /var/cache/apk/*
+  rm -rf /var/cache/apk/* && \
+  cd /tmp && \
+  curl -o mytop.tar.gz http://jeremy.zawodny.com/mysql/mytop/mytop-1.6.tar.gz && \
+  tar -zxvf mytop.tar.gz && \
+  cd mytop-1.6 && \
+  perl Makefile.PL && \
+  make && \
+  make test && \
+  make install
+
+  RUN apk add --no-cache --repository https://dl-4.alpinelinux.org/alpine/edge/testing gnu-libiconv
+  ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 # Install composer
 RUN curl https://getcomposer.org/installer | php7 -- --install-dir=/usr/bin --filename=composer
 
 # Build and install mediainfo
-ENV MEDIAINFO_VERSION 18.05
+ENV MEDIAINFO_VERSION 18.08
 RUN apk --update add gcc g++ && \
   mkdir -p /tmp && \
   cd /tmp && \
@@ -85,7 +96,7 @@ RUN mkdir -p /var/log/nginx && \
     touch /var/log/nginx/nginx-error.log
 
 # Clone nZEDb and set directory permissions
-ENV NZEDB_VERSION "v0.8.10.0"
+ENV NZEDB_VERSION "v0.8.16.0"
 RUN mkdir -p /var/www && \
   cd /var/www && \
   git clone https://github.com/nZEDb/nZEDb.git && \
@@ -127,11 +138,11 @@ RUN cd /tmp && \
   git checkout --quiet --force $PHP_ZEPHIR_PARSER_VERSION && \
   ./install && \
   echo "extension=zephir_parser.so" > /etc/php7/conf.d/98_zephir_parser.ini && \
-  cd /tmp && \
-  git clone https://github.com/niel/php-yenc.git && \
-  cd php-yenc && \
-  /tmp/zephir/vendor/bin/zephir install && \
-  echo "extension=yenc.so" > /etc/php7/conf.d/99_yenc.ini && \
+#cd /tmp && \
+#git clone https://github.com/niel/php-yenc.git && \
+#cd php-yenc && \
+#/tmp/zephir/vendor/bin/zephir install && \
+#echo "extension=yenc.so" > /etc/php7/conf.d/99_yenc.ini && \
   composer clear-cache && \
   cd /tmp && \
   rm -rf zephir php-yenc php-zephir-parser && \
@@ -166,7 +177,7 @@ RUN mv /bin/gzip /bin/gzip.real && \
 # iconv has issues in musl which affects NFO conversion to include
 # cool ascii chars. Remove the problematic parts - TRANSLIT and IGNORE
 # See https://github.com/slydetector/simply-nzedb/issues/31
-RUN sed -i "s|UTF-8//IGNORE//TRANSLIT|UTF-8|g" /var/www/nZEDb/nzedb/utility/Text.php
+#RUN sed -i "s|UTF-8//IGNORE//TRANSLIT|UTF-8|g" /var/www/nZEDb/nzedb/utility/Text.php
 
 LABEL nzedb=$NZEDB_VERSION \
   maintainer=theslydetector@gmail.com \
