@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.9
 MAINTAINER theslydetector@gmail.com
 
 # Configure Timezone
@@ -51,8 +51,13 @@ RUN apk add --update \
   make test && \
   make install
 
-  RUN apk add --no-cache --repository https://dl-4.alpinelinux.org/alpine/edge/testing gnu-libiconv
-  ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+RUN apk add --no-cache \
+    --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    gnu-libiconv
+#RUN apk add --no-cache gnu-libiconv
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 # Install composer
 RUN curl https://getcomposer.org/installer | php7 -- --install-dir=/usr/bin --filename=composer
@@ -96,7 +101,7 @@ RUN mkdir -p /var/log/nginx && \
     touch /var/log/nginx/nginx-error.log
 
 # Clone nZEDb and set directory permissions
-ENV NZEDB_VERSION "v0.8.16.0"
+ENV NZEDB_VERSION "v0.8.17.1"
 RUN mkdir -p /var/www && \
   cd /var/www && \
   git clone https://github.com/nZEDb/nZEDb.git && \
