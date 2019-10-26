@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 MAINTAINER theslydetector@gmail.com
 
 # Configure Timezone
@@ -20,7 +20,7 @@ RUN apk add --update \
   p7zip php7-ctype php7-curl php7-dev php7-exif php7-fpm php7-gd php7-iconv \
   php7-imagick php7-json php7-mcrypt php7-opcache php7-openssl php7-pcntl \
   php7-pdo php7-pdo_mysql php7-pear php7-phar php7-posix php7-redis php7-dom \
-  php7-session php7-simplexml php7-sockets php7-xmlwriter php7-zlib pigz \
+  php7-session php7-simplexml php7-sockets php7-xmlwriter php7-zlib php7-yenc pigz \
   proxychains-ng pstree py2-pip python \
   s6 strace \
   tar tig tree tzdata \
@@ -112,29 +112,6 @@ RUN apk --update add gcc g++ ncurses-dev libevent-dev bsd-compat-headers && \
   rm -rf /tmp/tmux && \
   apk del --purge gcc g++ ncurses-dev libevent-dev bsd-compat-headers && \
   rm -rf /var/cache/apk/*
-
-# Build and install php-yenc
-ENV PHP_ZEPHIR_PARSER_VERSION v1.1.2
-RUN cd /tmp && \
-  apk --update add gcc re2c libc-dev sudo && \
-  mkdir -p /tmp/zephir && \
-  cd /tmp/zephir && \
-  composer require phalcon/zephir && \
-  cd /tmp && \
-  git clone git://github.com/phalcon/php-zephir-parser.git && \
-  cd php-zephir-parser && \
-  git checkout --quiet --force $PHP_ZEPHIR_PARSER_VERSION && \
-  ./install && \
-  echo "extension=zephir_parser.so" > /etc/php7/conf.d/98_zephir_parser.ini && \
-  cd /tmp && \
-  git clone https://github.com/niel/php-yenc.git && \
-  cd php-yenc && \
-  /tmp/zephir/vendor/bin/zephir install && \
-  echo "extension=yenc.so" > /etc/php7/conf.d/99_yenc.ini && \
-  composer clear-cache && \
-  cd /tmp && \
-  rm -rf zephir php-yenc php-zephir-parser && \
-  apk del --purge gcc re2c libc-dev sudo
 
 # Build and install par2
 ENV PAR2_VERSION "v0.8.0"
