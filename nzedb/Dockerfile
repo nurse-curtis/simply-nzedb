@@ -2,7 +2,7 @@ FROM alpine:3.7
 MAINTAINER theslydetector@gmail.com
 
 # Configure Timezone
-ENV TIMEZONE "America/Chicago"
+ENV TIMEZONE "America/Edmonton"
 RUN rm -f /etc/localtime && \
   ln -s "/usr/share/zoneinfo/${TIMEZONE}" /etc/localtime && \
   echo "${TIMEZONE}" > /etc/timezone
@@ -19,7 +19,7 @@ RUN apk add --update \
   nginx \
   p7zip php7-ctype php7-curl php7-dev php7-exif php7-fpm php7-gd php7-iconv \
   php7-imagick php7-json php7-mcrypt php7-opcache php7-openssl php7-pcntl \
-  php7-pdo php7-pdo_mysql php7-pear php7-phar php7-posix php7-redis \
+  php7-pdo php7-pdo_mysql php7-pear php7-phar php7-posix php7-redis php7-dom \
   php7-session php7-simplexml php7-sockets php7-xmlwriter php7-zlib pigz \
   proxychains-ng pstree py2-pip python \
   s6 strace \
@@ -84,7 +84,7 @@ RUN mkdir -p /var/log/nginx && \
     touch /var/log/nginx/nginx-error.log
 
 # Clone nZEDb and set directory permissions
-ENV NZEDB_VERSION "v0.8.7.0"
+ENV NZEDB_VERSION "v0.8.19.0"
 RUN mkdir -p /var/www && \
   cd /var/www && \
   git clone https://github.com/nZEDb/nZEDb.git && \
